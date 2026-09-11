@@ -27,6 +27,9 @@ import {
   Wifi,
   Users,
   Mail,
+  Smartphone,
+  RotateCcw,
+  X,
 } from 'lucide-react';
 
 interface ChapterReaderProps {
@@ -49,6 +52,22 @@ export const ChapterReader: React.FC<ChapterReaderProps> = ({
   // Region filter for Appendix 1
   const [selectedRegion, setSelectedRegion] = useState<string>('all');
   const [activeCaseStudyId, setActiveCaseStudyId] = useState<string | null>(null);
+  const [showLandscapeTip, setShowLandscapeTip] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('hide_landscape_tip') !== 'true';
+    } catch {
+      return true;
+    }
+  });
+
+  const handleDismissLandscapeTip = () => {
+    setShowLandscapeTip(false);
+    try {
+      localStorage.setItem('hide_landscape_tip', 'true');
+    } catch {
+      // ignore
+    }
+  };
 
   // Font size classes
   const fontSizes = {
@@ -189,6 +208,40 @@ export const ChapterReader: React.FC<ChapterReaderProps> = ({
           </div>
         </div>
       </header>
+
+      {/* Mobile Landscape Reading Recommendation Banner */}
+      {showLandscapeTip && (
+        <aside
+          id="mobile-landscape-reading-tip"
+          aria-label="Recomendación de lectura en teléfonos"
+          className="mb-8 p-3.5 sm:p-4 rounded-xl bg-gradient-to-r from-indigo-950/60 via-indigo-900/30 to-purple-950/40 border border-indigo-700/50 text-neutral-200 shadow-lg flex items-start justify-between gap-3 block md:hidden"
+        >
+          <div className="flex items-start gap-3">
+            <div className="p-2 rounded-lg bg-indigo-600/30 border border-indigo-500/50 text-indigo-300 shrink-0 mt-0.5">
+              <Smartphone className="w-5 h-5 rotate-90" />
+            </div>
+            <div className="text-xs sm:text-sm leading-relaxed">
+              <div className="flex items-center gap-1.5 font-semibold text-indigo-200 mb-0.5">
+                <span>Consejo de lectura móvil</span>
+                <span className="text-[10px] px-1.5 py-0.2 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 uppercase tracking-wider font-mono">
+                  Horizontal
+                </span>
+              </div>
+              <p className="text-neutral-300 text-[12px] sm:text-xs">
+                Si estás leyendo desde un teléfono, puedes <strong>girar tu dispositivo a posición horizontal (landscape)</strong> para disfrutar de una lectura más amplia, descansada y con tipografía editorial optimizada.
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={handleDismissLandscapeTip}
+            className="p-1 rounded-md text-neutral-400 hover:text-white hover:bg-neutral-800/60 transition-colors shrink-0 cursor-pointer"
+            title="Ocultar esta sugerencia"
+            aria-label="Cerrar sugerencia de lectura"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </aside>
+      )}
 
       {/* Chapter In-Page Jump Links */}
       {chapter.subSections.length > 1 && (
