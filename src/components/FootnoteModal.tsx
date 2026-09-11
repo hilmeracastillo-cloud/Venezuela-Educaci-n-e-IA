@@ -30,7 +30,7 @@ export const FootnoteModal: React.FC<FootnoteModalProps> = ({
     >
       <div
         id="modal-footnote-card"
-        className="w-full max-w-xl bg-[#111111] rounded-2xl border border-[#2B2B2B] shadow-2xl p-5 sm:p-6 text-neutral-200 overflow-hidden relative"
+        className="w-full max-w-xl bg-[#111111] rounded-2xl border border-[#2B2B2B] shadow-2xl p-4 sm:p-6 text-neutral-200 max-h-[90vh] overflow-y-auto relative"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Top Bar */}

@@ -7,6 +7,7 @@ import { SearchModal } from './components/SearchModal';
 import { FootnoteModal } from './components/FootnoteModal';
 import { PdfExportModal } from './components/PdfExportModal';
 import { ChapterReader } from './components/ChapterReader';
+import { MobileNavBar } from './components/MobileNavBar';
 import { bookMeta } from './data/bookMeta';
 
 export function App() {
@@ -86,7 +87,7 @@ export function App() {
 
   return (
     <div className="min-h-screen bg-[#0A0A0A] text-[#E0E0E0] selection:bg-indigo-600 selection:text-white flex flex-col font-sans">
-      {/* Editorial Sticky Header */}
+      {/* Editorial Sticky Header (Works identically on Desktop, Tablet & Mobile) */}
       <Header
         currentChapter={currentChapter}
         readingProgress={readingProgress}
@@ -95,10 +96,11 @@ export function App() {
         onOpenToc={() => setIsTocOpen(true)}
         onOpenSearch={() => setIsSearchOpen(true)}
         onOpenPdfExport={() => setIsPdfModalOpen(true)}
+        onNavigateChapter={handleNavigateChapter}
       />
 
       {/* Main Content Area */}
-      <main className="flex-1 w-full pb-20">
+      <main className="flex-1 w-full pb-24 md:pb-20 safe-px">
         <ChapterReader
           chapter={currentChapter}
           previousChapter={previousChapter}
@@ -109,8 +111,22 @@ export function App() {
         />
       </main>
 
+      {/* Persistent Mobile / Tablet Bottom Navigation Bar */}
+      <MobileNavBar
+        currentChapter={currentChapter}
+        previousChapter={previousChapter}
+        nextChapter={nextChapter}
+        readingProgress={readingProgress}
+        fontSize={fontSize}
+        setFontSize={setFontSize}
+        onOpenToc={() => setIsTocOpen(true)}
+        onOpenSearch={() => setIsSearchOpen(true)}
+        onOpenPdfExport={() => setIsPdfModalOpen(true)}
+        onNavigateChapter={handleNavigateChapter}
+      />
+
       {/* Site Footer */}
-      <footer className="w-full border-t border-[#1C1C1C] bg-[#070707] py-10 px-4 sm:px-6 lg:px-8 text-center text-xs text-neutral-400">
+      <footer className="w-full border-t border-[#1C1C1C] bg-[#070707] py-10 px-4 sm:px-6 lg:px-8 text-center text-xs text-neutral-400 mb-14 md:mb-0 safe-pb">
         <div className="max-w-4xl mx-auto space-y-3">
           <p className="font-serif font-semibold text-neutral-300">
             {bookMeta.program}

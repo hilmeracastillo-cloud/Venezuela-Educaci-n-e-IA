@@ -140,7 +140,7 @@ export const ChapterReader: React.FC<ChapterReaderProps> = ({
   return (
     <article
       id={`chapter-reader-${chapter.id}`}
-      className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 text-[#E0E0E0] transition-all"
+      className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-14 text-[#E0E0E0] transition-all safe-px landscape-reading-padding"
     >
       {/* Chapter Top Meta Header */}
       <header className="mb-10 sm:mb-14 pb-8 border-b border-[#222222]">

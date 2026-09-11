@@ -1,14 +1,16 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   BookOpen,
   Search,
   Download,
-  Type,
+  ChevronDown,
   ChevronRight,
-  Sparkles,
+  Check,
+  Smartphone,
 } from 'lucide-react';
 import { Chapter, FontSize } from '../types';
 import { bookMeta } from '../data/bookMeta';
+import { allChapters } from '../data/articles';
 
 interface HeaderProps {
   currentChapter: Chapter;
@@ -18,6 +20,7 @@ interface HeaderProps {
   onOpenToc: () => void;
   onOpenSearch: () => void;
   onOpenPdfExport: () => void;
+  onNavigateChapter?: (chapterId: string) => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -28,7 +31,26 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenToc,
   onOpenSearch,
   onOpenPdfExport,
+  onNavigateChapter,
 }) => {
+  const [isChapterMenuOpen, setIsChapterMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // Close chapter dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setIsChapterMenuOpen(false);
+      }
+    };
+    if (isChapterMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isChapterMenuOpen]);
+
+  const currentIndex = allChapters.findIndex((c) => c.id === currentChapter.id);
+
   return (
     <header
       id="main-editorial-header"
@@ -42,39 +64,97 @@ export const Header: React.FC<HeaderProps> = ({
         />
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
-        {/* Left: Book Title & Active Chapter Breadcrumb */}
-        <div className="flex items-center gap-3 min-w-0">
+      <div className="max-w-7xl mx-auto safe-px h-14 sm:h-16 landscape:h-12 flex items-center justify-between gap-2 sm:gap-4">
+        {/* Left: Índice button & Book / Chapter Title */}
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+          {/* Main TOC Button - ALWAYS clearly labeled with icon + text on ALL screens */}
           <button
             id="btn-toc-trigger"
             onClick={onOpenToc}
-            aria-label="Abrir Tabla de Contenidos"
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium text-indigo-300 bg-indigo-950/40 border border-indigo-800/40 hover:bg-indigo-900/50 hover:border-indigo-600 transition-all cursor-pointer"
+            aria-label="Abrir Tabla de Contenidos Completa"
+            className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold text-indigo-300 bg-indigo-950/50 border border-indigo-700/60 hover:bg-indigo-900/60 hover:text-white hover:border-indigo-500 transition-all cursor-pointer shrink-0 shadow-sm"
           >
             <BookOpen className="w-4 h-4 text-indigo-400 shrink-0" />
-            <span className="hidden sm:inline">Índice</span>
+            <span className="inline font-medium">Índice</span>
+            <span className="hidden xs:inline-block px-1.5 py-0.2 rounded text-[10px] bg-indigo-900/60 text-indigo-200 border border-indigo-700/50">
+              {currentIndex + 1}/{allChapters.length}
+            </span>
           </button>
 
-          <div className="flex items-center gap-2 min-w-0 text-sm">
-            <span className="font-serif font-semibold text-neutral-200 truncate hidden md:inline">
-              {bookMeta.title}
-            </span>
-            <ChevronRight className="w-3.5 h-3.5 text-neutral-600 shrink-0 hidden md:inline" />
-            <span className="px-2 py-0.5 rounded text-[11px] font-medium tracking-wide uppercase bg-[#181818] text-indigo-300 border border-[#2B2B2B] shrink-0">
-              {currentChapter.part}
-            </span>
-            <span className="text-neutral-400 truncate text-xs sm:text-sm font-medium">
-              {currentChapter.title}
-            </span>
+          {/* Quick Chapter Selector Dropdown */}
+          <div ref={menuRef} className="relative min-w-0">
+            <button
+              id="btn-quick-chapter-selector"
+              onClick={() => setIsChapterMenuOpen(!isChapterMenuOpen)}
+              className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-[#141414] hover:bg-[#1C1C1C] border border-[#262626] hover:border-neutral-600 transition-all text-left min-w-0 max-w-[160px] xs:max-w-[220px] sm:max-w-[340px] md:max-w-[420px] cursor-pointer"
+              title="Seleccionar capítulo"
+            >
+              <span className="text-[10px] sm:text-[11px] font-mono font-bold text-indigo-400 shrink-0 uppercase tracking-tight">
+                {currentChapter.number !== '0.1' && currentChapter.number !== '0.2'
+                  ? `Cap. ${currentChapter.number}`
+                  : 'Inicio'}
+              </span>
+              <span className="text-xs sm:text-sm text-neutral-200 font-medium truncate">
+                {currentChapter.title}
+              </span>
+              <ChevronDown className={`w-3.5 h-3.5 text-neutral-400 shrink-0 transition-transform ${isChapterMenuOpen ? 'rotate-180 text-indigo-400' : ''}`} />
+            </button>
+
+            {/* Dropdown Menu of Chapters */}
+            {isChapterMenuOpen && (
+              <div className="absolute top-full left-0 mt-2 w-72 sm:w-84 bg-[#121212] border border-[#2B2B2B] rounded-xl shadow-2xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-150 py-1 max-h-[70vh] overflow-y-auto">
+                <div className="px-3 py-2 border-b border-[#202020] bg-[#161616] flex items-center justify-between">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-400">
+                    Cambiar de Capítulo
+                  </span>
+                  <button
+                    onClick={() => {
+                      setIsChapterMenuOpen(false);
+                      onOpenToc();
+                    }}
+                    className="text-[11px] text-indigo-400 hover:underline"
+                  >
+                    Ver índice completo
+                  </button>
+                </div>
+                {allChapters.map((chap, idx) => {
+                  const isCurrent = chap.id === currentChapter.id;
+                  return (
+                    <button
+                      key={chap.id}
+                      onClick={() => {
+                        setIsChapterMenuOpen(false);
+                        if (onNavigateChapter) onNavigateChapter(chap.id);
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
+                      className={`w-full text-left px-3.5 py-2.5 flex items-start gap-2.5 transition-colors cursor-pointer border-b border-[#1A1A1A] last:border-0 ${
+                        isCurrent
+                          ? 'bg-indigo-950/40 text-indigo-200 font-semibold'
+                          : 'text-neutral-300 hover:bg-[#1A1A1A] hover:text-white'
+                      }`}
+                    >
+                      <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#1E1E1E] text-neutral-400 shrink-0 mt-0.5">
+                        {idx + 1}
+                      </span>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-xs truncate">{chap.title}</div>
+                        <div className="text-[10px] text-neutral-500 truncate">{chap.part}</div>
+                      </div>
+                      {isCurrent && <Check className="w-3.5 h-3.5 text-indigo-400 shrink-0 mt-1" />}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Right: Study & Reader Tools */}
-        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-          {/* Font Size Adjuster */}
+        {/* Right: Study & Reader Tools (Responsive for Mobile, Tablet, PC & Landscape) */}
+        <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+          {/* Font Size Adjuster - Compact on small portrait, Full on tablet/desktop/landscape */}
           <div
             id="font-size-controls"
-            className="flex items-center bg-[#141414] border border-[#262626] rounded-lg p-0.5 text-xs text-neutral-400"
+            className="hidden sm:flex items-center bg-[#141414] border border-[#262626] rounded-lg p-0.5 text-xs text-neutral-400"
           >
             <button
               id="btn-font-sm"
@@ -118,11 +198,11 @@ export const Header: React.FC<HeaderProps> = ({
           <button
             id="btn-search-trigger"
             onClick={onOpenSearch}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium text-neutral-300 bg-[#141414] border border-[#262626] hover:border-neutral-500 hover:text-white transition-all cursor-pointer"
+            className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-medium text-neutral-300 bg-[#141414] border border-[#262626] hover:border-neutral-500 hover:text-white transition-all cursor-pointer"
             title="Buscar en la obra (Ctrl/Cmd + K)"
           >
             <Search className="w-3.5 h-3.5 text-neutral-400" />
-            <span className="hidden sm:inline">Buscar</span>
+            <span className="hidden md:inline">Buscar</span>
             <kbd className="hidden lg:inline-block text-[10px] bg-neutral-800 text-neutral-400 px-1.5 py-0.5 rounded border border-neutral-700">
               ⌘K
             </kbd>
@@ -132,7 +212,7 @@ export const Header: React.FC<HeaderProps> = ({
           <button
             id="btn-pdf-trigger"
             onClick={onOpenPdfExport}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-emerald-300 bg-emerald-950/30 border border-emerald-800/40 hover:bg-emerald-900/50 hover:border-emerald-500 transition-all cursor-pointer"
+            className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-medium text-emerald-300 bg-emerald-950/30 border border-emerald-800/40 hover:bg-emerald-900/50 hover:border-emerald-500 transition-all cursor-pointer"
             title="Descargar versión PDF maquetada"
           >
             <Download className="w-3.5 h-3.5 text-emerald-400" />
@@ -143,3 +223,4 @@ export const Header: React.FC<HeaderProps> = ({
     </header>
   );
 };
+

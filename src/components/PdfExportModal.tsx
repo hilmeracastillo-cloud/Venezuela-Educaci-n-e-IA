@@ -79,7 +79,7 @@ export const PdfExportModal: React.FC<PdfExportModalProps> = ({
     >
       <div
         id="modal-pdf-panel"
-        className="w-full max-w-lg bg-[#121212] rounded-2xl border border-[#2B2B2B] shadow-2xl p-6 text-neutral-200 overflow-hidden relative"
+        className="w-full max-w-lg bg-[#121212] rounded-2xl border border-[#2B2B2B] shadow-2xl p-5 sm:p-6 text-neutral-200 max-h-[90vh] overflow-y-auto relative"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}

@@ -58,11 +58,11 @@ export const TocModal: React.FC<TocModalProps> = ({
     >
       <div
         id="modal-toc-panel"
-        className="w-full max-w-xl sm:max-w-2xl bg-[#0F0F0F] h-full border-r border-[#262626] shadow-2xl flex flex-col overflow-hidden text-neutral-200"
+        className="w-full max-w-xl sm:max-w-2xl bg-[#0F0F0F] h-full border-r border-[#262626] shadow-2xl flex flex-col overflow-hidden text-neutral-200 pl-[max(0rem,env(safe-area-inset-left))] pb-[max(0rem,env(safe-area-inset-bottom))]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}
-        <div className="p-5 border-b border-[#222222] bg-[#141414] flex items-center justify-between gap-4">
+        <div className="p-4 sm:p-5 border-b border-[#222222] bg-[#141414] flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-lg bg-indigo-950/60 border border-indigo-800/40 text-indigo-400">
               <BookOpen className="w-5 h-5" />
