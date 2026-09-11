@@ -6,6 +6,7 @@ import { TocModal } from './components/TocModal';
 import { SearchModal } from './components/SearchModal';
 import { FootnoteModal } from './components/FootnoteModal';
 import { PdfExportModal } from './components/PdfExportModal';
+import { FormatsModal } from './components/FormatsModal';
 import { ChapterReader } from './components/ChapterReader';
 import { MobileNavBar } from './components/MobileNavBar';
 import { bookMeta } from './data/bookMeta';
@@ -16,6 +17,7 @@ export function App() {
   const [isTocOpen, setIsTocOpen] = useState<boolean>(false);
   const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
   const [isPdfModalOpen, setIsPdfModalOpen] = useState<boolean>(false);
+  const [isFormatsModalOpen, setIsFormatsModalOpen] = useState<boolean>(false);
   const [selectedFootnote, setSelectedFootnote] = useState<Footnote | null>(null);
   const [readingProgress, setReadingProgress] = useState<number>(0);
 
@@ -96,6 +98,7 @@ export function App() {
         onOpenToc={() => setIsTocOpen(true)}
         onOpenSearch={() => setIsSearchOpen(true)}
         onOpenPdfExport={() => setIsPdfModalOpen(true)}
+        onOpenFormats={() => setIsFormatsModalOpen(true)}
         onNavigateChapter={handleNavigateChapter}
       />
 
@@ -108,6 +111,7 @@ export function App() {
           fontSize={fontSize}
           onSelectFootnote={(fn) => setSelectedFootnote(fn)}
           onNavigateChapter={handleNavigateChapter}
+          onOpenFormats={() => setIsFormatsModalOpen(true)}
         />
       </main>
 
@@ -122,6 +126,7 @@ export function App() {
         onOpenToc={() => setIsTocOpen(true)}
         onOpenSearch={() => setIsSearchOpen(true)}
         onOpenPdfExport={() => setIsPdfModalOpen(true)}
+        onOpenFormats={() => setIsFormatsModalOpen(true)}
         onNavigateChapter={handleNavigateChapter}
       />
 
@@ -141,6 +146,15 @@ export function App() {
       </footer>
 
       {/* Modals */}
+      <FormatsModal
+        isOpen={isFormatsModalOpen}
+        onClose={() => setIsFormatsModalOpen(false)}
+        onSelectInteractive={() => {
+          setIsFormatsModalOpen(false);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
+      />
+
       <TocModal
         isOpen={isTocOpen}
         activeChapterId={activeChapterId}

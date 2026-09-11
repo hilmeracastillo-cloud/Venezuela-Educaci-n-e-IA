@@ -7,6 +7,7 @@ import {
   ChevronRight,
   Check,
   Smartphone,
+  Layers,
 } from 'lucide-react';
 import { Chapter, FontSize } from '../types';
 import { bookMeta } from '../data/bookMeta';
@@ -20,6 +21,7 @@ interface HeaderProps {
   onOpenToc: () => void;
   onOpenSearch: () => void;
   onOpenPdfExport: () => void;
+  onOpenFormats: () => void;
   onNavigateChapter?: (chapterId: string) => void;
 }
 
@@ -31,6 +33,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenToc,
   onOpenSearch,
   onOpenPdfExport,
+  onOpenFormats,
   onNavigateChapter,
 }) => {
   const [isChapterMenuOpen, setIsChapterMenuOpen] = useState(false);
@@ -194,6 +197,20 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
           </div>
 
+          {/* Formatos y Recursos Trigger Button */}
+          <button
+            id="btn-formats-trigger"
+            onClick={onOpenFormats}
+            className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold text-amber-300 bg-amber-950/40 border border-amber-700/50 hover:bg-amber-900/50 hover:border-amber-500 hover:text-white transition-all cursor-pointer shadow-sm"
+            title="Ver opciones de interacción: Infografía, Presentación, Video, Resumen, Completo"
+          >
+            <Layers className="w-3.5 h-3.5 text-amber-400" />
+            <span className="inline">Formatos</span>
+            <span className="hidden xs:inline-block px-1 py-0.2 rounded text-[9px] bg-amber-900/60 text-amber-200 border border-amber-700/40">
+              6
+            </span>
+          </button>
+
           {/* Search Trigger */}
           <button
             id="btn-search-trigger"
@@ -212,11 +229,11 @@ export const Header: React.FC<HeaderProps> = ({
           <button
             id="btn-pdf-trigger"
             onClick={onOpenPdfExport}
-            className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-medium text-emerald-300 bg-emerald-950/30 border border-emerald-800/40 hover:bg-emerald-900/50 hover:border-emerald-500 transition-all cursor-pointer"
+            className="hidden sm:flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-medium text-emerald-300 bg-emerald-950/30 border border-emerald-800/40 hover:bg-emerald-900/50 hover:border-emerald-500 transition-all cursor-pointer"
             title="Descargar versión PDF maquetada"
           >
             <Download className="w-3.5 h-3.5 text-emerald-400" />
-            <span className="hidden sm:inline">PDF</span>
+            <span>PDF</span>
           </button>
         </div>
       </div>

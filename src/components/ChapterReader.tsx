@@ -39,6 +39,7 @@ interface ChapterReaderProps {
   fontSize: FontSize;
   onSelectFootnote: (footnote: Footnote) => void;
   onNavigateChapter: (chapterId: string, blockId?: string) => void;
+  onOpenFormats?: () => void;
 }
 
 export const ChapterReader: React.FC<ChapterReaderProps> = ({
@@ -48,6 +49,7 @@ export const ChapterReader: React.FC<ChapterReaderProps> = ({
   fontSize,
   onSelectFootnote,
   onNavigateChapter,
+  onOpenFormats,
 }) => {
   // Region filter for Appendix 1
   const [selectedRegion, setSelectedRegion] = useState<string>('all');
@@ -208,6 +210,41 @@ export const ChapterReader: React.FC<ChapterReaderProps> = ({
           </div>
         </div>
       </header>
+
+      {/* Available Interaction Formats Banner */}
+      {onOpenFormats && (
+        <section
+          id="work-interaction-formats-bar"
+          aria-label="Formatos de interacción de la obra"
+          className="mb-8 p-3.5 sm:p-4 rounded-2xl bg-[#121216] border border-[#262633] shadow-md flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+        >
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-xl bg-amber-950/60 border border-amber-700/50 text-amber-400 shrink-0">
+              <Layers className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs sm:text-sm font-semibold text-white">
+                  6 Opciones de Interacción con esta Obra
+                </span>
+                <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                  Multimedia
+                </span>
+              </div>
+              <p className="text-[11px] sm:text-xs text-neutral-400 mt-0.5">
+                Infografía (1 pág) • Presentación (35 slides) • Video (7 min) • Resumen (4 págs) • Interactivo • Completo (~100 págs)
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={onOpenFormats}
+            className="self-start sm:self-auto px-3.5 py-2 rounded-xl bg-amber-950/50 hover:bg-amber-900/60 border border-amber-600/60 hover:border-amber-400 text-amber-200 font-medium text-xs flex items-center gap-2 transition-all shadow-sm active:scale-95 cursor-pointer shrink-0"
+          >
+            <Layers className="w-3.5 h-3.5 text-amber-400" />
+            <span>Ver Formatos</span>
+          </button>
+        </section>
+      )}
 
       {/* Mobile Landscape Reading Recommendation Banner */}
       {showLandscapeTip && (

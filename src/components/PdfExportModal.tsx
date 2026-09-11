@@ -41,6 +41,27 @@ export const PdfExportModal: React.FC<PdfExportModalProps> = ({
     setErrorMessage('');
 
     try {
+      if (exportScope === 'all') {
+        try {
+          const testRes = await fetch('/recursos/documento-completo-100-paginas.pdf', { method: 'HEAD' });
+          if (testRes.ok) {
+            const a = document.createElement('a');
+            a.href = '/recursos/documento-completo-100-paginas.pdf';
+            a.download = 'documento-completo-100-paginas.pdf';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            setProgressPercent(100);
+            setIsSuccess(true);
+            setStatusMessage('¡Descarga directa del Documento Completo iniciada!');
+            setIsGenerating(false);
+            return;
+          }
+        } catch {
+          // Si falla, continúa con generación dinámica
+        }
+      }
+
       await generateBookPDF({
         scope: exportScope,
         chapter: currentChapter,

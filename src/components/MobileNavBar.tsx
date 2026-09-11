@@ -6,6 +6,7 @@ import {
   Search,
   Type,
   Download,
+  Layers,
 } from 'lucide-react';
 import { Chapter, FontSize } from '../types';
 import { allChapters } from '../data/articles';
@@ -20,6 +21,7 @@ interface MobileNavBarProps {
   onOpenToc: () => void;
   onOpenSearch: () => void;
   onOpenPdfExport: () => void;
+  onOpenFormats: () => void;
   onNavigateChapter: (chapterId: string) => void;
 }
 
@@ -33,6 +35,7 @@ export const MobileNavBar: React.FC<MobileNavBarProps> = ({
   onOpenToc,
   onOpenSearch,
   onOpenPdfExport,
+  onOpenFormats,
   onNavigateChapter,
 }) => {
   const currentIndex = allChapters.findIndex((c) => c.id === currentChapter.id);
@@ -116,6 +119,17 @@ export const MobileNavBar: React.FC<MobileNavBarProps> = ({
         >
           <ChevronRight className="w-5 h-5 mb-0.5" />
           <span className="text-[10px] font-medium tracking-tight">Siguiente</span>
+        </button>
+
+        {/* Formatos y Recursos */}
+        <button
+          onClick={onOpenFormats}
+          aria-label="Ver opciones y formatos de la obra"
+          className="flex flex-col items-center justify-center p-2 rounded-xl text-amber-300 hover:text-amber-200 hover:bg-amber-950/40 transition-all active:scale-95 cursor-pointer min-w-[46px]"
+          title="Opciones de Interacción (Infografía, Video, Presentación, Resumen, etc.)"
+        >
+          <Layers className="w-4 h-4 mb-0.5 text-amber-400" />
+          <span className="text-[10px] font-medium">Formatos</span>
         </button>
 
         {/* Quick Search */}
